@@ -1,30 +1,37 @@
-# EZ-USB&trade; FX2G3: Hello world
+# EZ-USB&trade; FX2G3: Hello world application
 
-This code example demonstrates the bare metal application, which toggles GPIO pins and prints messages out through the SCB-UART interface using the FX2G3 device.
+This code example demonstrates the bare metal application, which toggles GPIO pins and prints messages out through the USB FS debug interface using the EZ-USB&trade; FX2G3 device.
 
 > **Note:** This code example is an alpha release only for EZ-USB&trade; FX2G3 devices.
 
-[View this README on GitHub.](https://github.com/Infineon/mtb-example-fx2g3-hello-world/-/tree/develop?ref_type=heads)
+[View this README on GitHub.](https://github.com/Infineon/mtb-example-fx2g3-hello-world/)
 
 [Provide feedback on this code example.](https://cypress.co1.qualtrics.com/jfe/form/SV_1NTns53sK2yiljn?Q_EED=eyJVbmlxdWUgRG9jIElkIjoiQ0UyNDA2MzciLCJTcGVjIE51bWJlciI6IjAwMi00MDYzNyIsIkRvYyBUaXRsZSI6IkVaLVVTQiZ0cmFkZTsgRlgyRzM6IEhlbGxvIHdvcmxkIiwicmlkIjoic3VrdSIsIkRvYyB2ZXJzaW9uIjoiMS4wLjAiLCJEb2MgTGFuZ3VhZ2UiOiJFbmdsaXNoIiwiRG9jIERpdmlzaW9uIjoiTUNEIiwiRG9jIEJVIjoiV0lSRUQiLCJEb2MgRmFtaWx5IjoiVVNCX0hTIn0=)
 
 
 ## Requirements
+
 - [ModusToolbox&trade;](https://www.infineon.com/modustoolbox) v3.2 or later (tested with v3.2)
 - Board support package (BSP) minimum required version: 4.3.2
 - Programming language: C
+- Associated parts: [EZ-USB&trade; FX2G3](https://www.infineon.com/cms/en/product/promopages/ez-usb-fx2g3/)
+
 
 ## Supported toolchains (make variable 'TOOLCHAIN')
+
 - GNU Arm&reg; Embedded Compiler v11.3.1 (`GCC_ARM`) – Default value of `TOOLCHAIN`
 - Arm&reg; Compiler v6.16 (`ARM`)
 
+
 ## Supported kits (make variable 'TARGET')
 
-- [EZ-USB&trade; FX2G3 DVK](https://github.com/Infineon/mtb-example-fx2g3-hello-world) (`KIT_FX2G3_104LGA`) – Default value of `TARGET`
+- [EZ-USB&trade; FX2G3 DVK](https://www.infineon.com/cms/en/product/promopages/ez-usb-fx2g3/) (`KIT_FX2G3_104LGA`) – Default value of `TARGET`
+
 
 ## Hardware setup
 
 This example uses the board's default configuration. See the kit user guide to ensure that the board is configured correctly.
+
 
 ## Software setup
 
@@ -34,7 +41,9 @@ Install a terminal emulator if you don't have one. Instructions in this document
 
 This example requires no additional software or tools.
 
+
 ## Using the code example
+
 
 ### Create the project
 
@@ -66,6 +75,7 @@ The ModusToolbox&trade; tools package provides the Project Creator as both a GUI
 
 </details>
 
+
 <details><summary><b>Use Project Creator CLI</b></summary>
 
 The 'project-creator-cli' tool can be used to create applications from a CLI terminal or from within batch files or shell scripts. This tool is available in the *{ModusToolbox&trade; install directory}/tools_{version}/project-creator/* directory.
@@ -91,6 +101,7 @@ Argument | Description | Required/optional
 > **Note:** The project-creator-cli tool uses the `git clone` and `make getlibs` commands to fetch the repository and import the required libraries. For details, see the "Project creator tools" section of the [ModusToolbox&trade; tools package user guide](https://www.infineon.com/ModusToolboxUserGuide) (locally available at {ModusToolbox&trade; install directory}/docs_{version}/mtb_user_guide.pdf).
 
 </details>
+
 
 ### Open the project
 
@@ -140,51 +151,51 @@ For more details, see the [ModusToolbox&trade; tools package user guide](https:/
 
    3. Navigate to the *<CE Title>/build/APP_KIT_FX2G3_104LGA/Release* folder within the CE directory and locate the *.hex* file and program.
       
-      Confirm if the programming is successful in the log window of the application.
+   4. Confirm if the programming is successful in the log window of the application.
 
-4. After programming, the application starts automatically. Confirm that "\<CE Title>" is displayed on the UART terminal.
+4. After programming, the application starts automatically. Confirm that the following title is displayed on the UART terminal.
 
    **Figure 1. Terminal output on program startup**
 
    ![](images/terminal-fx2g3-hello-world.png)
 
-5. Confirm that the GPIO1 & GPIO2 toggles at approximately 1 Hz.
+5. Confirm that the GPIO1 and GPIO2 toggles at approximately 1 Hz.
 
-## Logging configurations
 
-By default, the USBFS port is enabled for debug logs.
-To enable debug logs on UART, set **USBFS_LOGS_ENABLE** compiler flag to '0u' in the *makefile*. SCB4 of the FX2G3 device is used as UART with a baud rate of 921,600 to send out log messages through the P11.0 pin.
 
 ## Debugging
 
-Debug the code example by setting debug levels for the UART logs. Set the **DEBUG_LEVEL** macro in *main.c* file with the following values for debugging.
+By default, the USBFS port is enabled for debug logs.
+
+To enable debug logs on UART, set the **USBFS_LOGS_ENABLE** compiler flag to '0u' in the *makefile*. SCB4 of the EZ-USB&trade; FX2G3 device is used as UART with a baud rate of 921,600 to send out log messages through the P11.0 pin.
+
+Debug the code example by setting debug levels for the UART logs. Set the **DEBUG_LEVEL** macro in the *main.c* file with the following values for debugging.
 
 **Table 1. Debug values**
 
 Macro value     |    Description
 :-------------  | :------------
-1u             | Enable error messages
-2u               | Enable warning messages
-3u             | Enable info messages
-4u                | Enable all messages
-
+1u              | Enable error messages
+2u              | Enable warning messages
+3u              | Enable info messages
+4u              | Enable all messages
 <br>
 
-## Compile-time configurations
+### Compile-time configurations
 
 This application's functionality can be customized through the compile-time parameters that can be turned ON or OFF through the *makefile*.
 The application uses the GNU Arm&reg; 11.3 toolchain, which is part of the ModusToolbox&trade; installation for compilation.
-- Run the `make` command to compile the application and generate a USB bootloader compatible binary. This binary can be programmed to the FX2G3 device using the EZ-USB&trade; Control Center application.
-- Run the `make BLENABLE=no` command to compile the application and generate the standalone binary. This binary can be programmed onto the FX2G3 device through the SWD interface using the OpenOCD tool. For more details, see the [EZ-USB&trade; FX2G3 SDK user guide](https://www.infineon.com/cms/en/product/promopages/ez-usb-fx2g3/#main-features-comparison).
+- Run the `make` command or build the project in your IDE to compile the application and generate a USB bootloader compatible binary. This binary can be programmed to the EZ-USB&trade; FX2G3 device using the EZ-USB&trade; Control Center application.
+- Run the `make BLENABLE=no` command or set the variable in the **Makefile** to compile the application and generate the standalone binary. This binary can be programmed onto the EZ-USB&trade; FX2G3 device through the SWD interface using the OpenOCD tool. For more details, see the [EZ-USB&trade; FX2G3 SDK user guide](https://www.infineon.com/cms/en/product/promopages/ez-usb-fx2g3/#main-features-comparison).
+- Run the `make REV02=no` command or set the variable in the **Makefile** to compile the application and generate the binary compatible with REV01 version of the EZ-USB&trade; FX2G3 Kit.
 
-By default, the application is configured to receive data from a 16-bit wide LVCMOS interface in SDR mode and makes a USBHS data connection. These settings can be modified by modifying settings in the *makefile*.
+By default, the application is configured to output debug logs on USBFS port. These settings can be modified in the *Makefile*.
 
 **Table 2. Macro description**
 
-Macro name        |    Description                            | Allowed values
+Flag name         | Description                               | Allowed values
 :-------------    | :------------                             | :--------------
 USBFS_LOGS_ENABLE | Enable debug logs through USBFS port      | 1u for debug logs over USBFS. <br> 0u for debug logs over UART (SCB4).
-
 <br>
 
 ## Related resources
@@ -192,14 +203,15 @@ USBFS_LOGS_ENABLE | Enable debug logs through USBFS port      | 1u for debug log
 Resources  | Links
 -----------|----------------------------------
 Code examples  | [Using ModusToolbox&trade;](https://github.com/Infineon/Code-Examples-for-ModusToolbox-Software) on GitHub
-Device documentation | [FX2G3 datasheets](https://www.infineon.com/cms/en/product/promopages/ez-usb-fx2g3/#!?fileId=8ac78c8c90530b3a01909c03f29537e0)
-Development kits | Select your kits from the [Evaluation board finder](https://www.infineon.com/cms/en/design-support/finder-selection-tools/product-finder/evaluation-board)
+Device documentation | [EZ-USB&trade; FX2G3 datasheets](https://www.infineon.com/cms/en/product/promopages/ez-usb-fx2g3/#!?fileId=8ac78c8c90530b3a01909c03f29537e0)
+Development kits | Select your kits from the [Evaluation board finder](https://www.infineon.com/cms/en/design-support/finder-selection-tools/product-finder/evaluation-board).
 Libraries on GitHub | [mtb-pdl-cat1](https://github.com/Infineon/mtb-pdl-cat1) – Peripheral Driver Library (PDL) and docs
 Middleware on GitHub  | [usbfxstack](https://github.com/Infineon/usbfxstack) – USBFXStack middleware library and docs
 Tools  | [ModusToolbox&trade;](https://www.infineon.com/modustoolbox) – ModusToolbox&trade; software is a collection of easy-to-use libraries and tools enabling rapid development with Infineon MCUs for applications ranging from wireless and cloud-connected systems, edge AI/ML, embedded sense and control, to wired USB connectivity using PSOC&trade; Industrial/IoT MCUs, AIROC&trade; Wi-Fi and Bluetooth&reg; connectivity devices, XMC&trade; Industrial MCUs, and EZ-USB&trade;/EZ-PD&trade; wired connectivity controllers. ModusToolbox&trade; incorporates a comprehensive set of BSPs, HAL, libraries, configuration tools, and provides support for industry-standard IDEs to fast-track your embedded application development.
+<br>
 
 > **Note:** For more information about the software modules and configuration options, see the [EZ-USB&trade; FX2G3 SDK user guide](https://www.infineon.com/cms/en/product/promopages/ez-usb-fx2g3/#main-features-comparison).
-<br>
+
 
 
 ## Other resources
@@ -207,22 +219,23 @@ Tools  | [ModusToolbox&trade;](https://www.infineon.com/modustoolbox) – ModusT
 Infineon provides a wealth of data at [www.infineon.com](https://www.infineon.com) to help you select the right device, and quickly and effectively integrate it into your design.
 
 
-
 ## Document history
 
 
-Document title: *CE240637* – *EZ-USB FX2G3: Hello world application*
+Document title: *CE240637* – *EZ-USB&trade; FX2G3: Hello world application*
 
  Version | Description of change
  ------- | ---------------------
  1.0.0   | New code example
+ 1.0.1   | Updated for REV02 Kit
 <br>
 
 
 
 All referenced product or service names and trademarks are the property of their respective owners.
 
-The Bluetooth® word mark and logos are registered trademarks owned by Bluetooth SIG, Inc., and any use of such marks by Infineon is under license.
+The Bluetooth&reg; word mark and logos are registered trademarks owned by Bluetooth SIG, Inc., and any use of such marks by Infineon is under license.
+
 
 ---------------------------------------------------------
 
