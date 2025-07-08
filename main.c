@@ -2,11 +2,11 @@
 * \file main.c
 * \version 1.0
 *
-* Main source file of the FX2G3 device Hello World application.
+* \brief Main source file of the FX2G3 device Hello World application.
 *
 *******************************************************************************
 * \copyright
-* (c) (2024), Cypress Semiconductor Corporation (an Infineon company) or
+* (c) (2025), Cypress Semiconductor Corporation (an Infineon company) or
 * an affiliate of Cypress Semiconductor Corporation.
 *
 * SPDX-License-Identifier: Apache-2.0
@@ -30,33 +30,50 @@
 #include "cy_debug.h"
 #include "cybsp.h"
 
-/* Debug log related initilization */
+/* Debug log related initialization */
 #define LOGGING_SCB             (SCB4)
 #define LOGGING_SCB_IDX         (4)
 #define DEBUG_LEVEL             (3u)
 
-#define LOGBUF_SIZE             (1024u)
+#define LOGBUF_SIZE (1024u)
+
 uint8_t logBuff[LOGBUF_SIZE];
-
+cy_stc_debug_config_t dbgCfg = {
+    .pBuffer         = logBuff,
+    .traceLvl        = DEBUG_LEVEL,
+    .bufSize         = LOGBUF_SIZE,
 #if USBFS_LOGS_ENABLE
-    cy_stc_debug_config_t dbgCfg = {logBuff, DEBUG_LEVEL, LOGBUF_SIZE, CY_DEBUG_INTFCE_USBFS_CDC, true};
+    .dbgIntfce       = CY_DEBUG_INTFCE_USBFS_CDC,
 #else
-    cy_stc_debug_config_t dbgCfg = {logBuff, DEBUG_LEVEL, LOGBUF_SIZE, CY_DEBUG_INTFCE_UART_SCB4, true};
-#endif /* USBFS_LOGS_ENABLE */
+    .dbgIntfce       = CY_DEBUG_INTFCE_UART_SCB4,
+#endif
+    .printNow        = true
+};
 
-/*******************************************************************************
- * Function name: Cy_Fx2g3_InitPeripheralClocks
- ****************************************************************************//**
- *
- * Function used to enable clocks to different peripherals on the FX2G3 device.
- *
- * \param adcClkEnable
- * Whether to enable clock to the ADC in the USBSS block.
- *
- * \param usbfsClkEnable
- * Whether to enable bus reset detect clock input to the USBFS block.
- *
- *******************************************************************************/
+/**
+ * \name Cy_PrintVersionInfo
+ * \brief Function to print version information to UART console.
+ * \param type Type of version string.
+ * \param typeLen Length of version type string.
+ * \param vMajor Major version number (0 - 99)
+ * \param vMinor Minor version number (0 - 99)
+ * \param vPatch Patch version number (0 - 99)
+ * \param vBuild Build number (0 - 9999)
+ * \retval None
+ */
+void Cy_PrintVersionInfo (const char *type, uint8_t typeLen,
+                       uint8_t vMajor, uint8_t vMinor, uint8_t vPatch, uint16_t vBuild)
+{
+    DBG_APP_INFO("%s%d.%d.%d.%d\r\n", type, vMajor, vMinor, vPatch, vBuild);
+}
+
+/**
+ * \name Cy_Fx2g3_InitPeripheralClocks
+ * \brief Function used to enable clocks to different peripherals on the FX2G3 device.
+ * \param adcClkEnable Whether to enable clock to the ADC in the USBSS block.
+ * \param usbfsClkEnable Whether to enable bus reset detect clock input to the USBFS block.
+ * \retval None
+ */
 void Cy_Fx2g3_InitPeripheralClocks (
         bool adcClkEnable,
         bool usbfsClkEnable)
@@ -78,84 +95,17 @@ void Cy_Fx2g3_InitPeripheralClocks (
     }
 }
 
-/*******************************************************************************
- * Function name: Cy_Fx2g3_OnResetInit
- ****************************************************************************//**
- *
- * This function performs initialization that is required to enable scatter
- * loading of data into the High BandWidth RAM during device boot-up. The FX2G3
- * device comes up with the High BandWidth RAM disabled and hence any attempt
- * to read/write the RAM will cause the processor to hang. The RAM needs to
- * be enabled with default clock settings to allow scatter loading to work.
- * This function needs to be called from Cy_OnResetUser.
- *
- *******************************************************************************/
-void
-Cy_Fx2g3_OnResetInit (
-        void)
-{
-    /* Enable clk_hf4 with IMO as input. */
-    SRSS->CLK_ROOT_SELECT[4] = SRSS_CLK_ROOT_SELECT_ENABLE_Msk;
-
-    /* Enable LVDS2USB32SS IP and select clk_hf[4] as clock input. */
-    MAIN_REG->CTRL = (
-            MAIN_REG_CTRL_IP_ENABLED_Msk |
-            (1UL << MAIN_REG_CTRL_NUM_FAST_AHB_STALL_CYCLES_Pos) |
-            (1UL << MAIN_REG_CTRL_NUM_SLOW_AHB_STALL_CYCLES_Pos) |
-            (3UL << MAIN_REG_CTRL_DMA_SRC_SEL_Pos));
-}
-
-/*****************************************************************************
- * Function Name: Cy_PrintVersionInfo
- ******************************************************************************
- * Summary:
- *  Function to print version information to UART console.
- *
- * Parameters:
- *  type: Type of version string.
- *  typeLen: Length of version type string.
- *  vMajor: Major version number (0 - 99)
- *  vMinor: Minor version number (0 - 99)
- *  vPatch: Patch version number (0 - 99)
- *  vBuild: Build number (0 - 9999)
- *
- * Return:
- *  None
- *****************************************************************************/
-void Cy_PrintVersionInfo (const char *type, uint8_t typeLen,
-                       uint8_t vMajor, uint8_t vMinor, uint8_t vPatch, uint16_t vBuild)
-{
-    DBG_APP_INFO("%s%d.%d.%d.%d\r\n", type, vMajor, vMinor, vPatch, vBuild);
-}
-
-/*****************************************************************************
- * Function Name: PeripheralInit
- *****************************************************************************
- * Summary
- *  Initialize peripherals used by the application.
- *
- * Parameters:
- *  None
- *
- * Return:
- *  void
- ****************************************************************************/
+/**
+ * \name PeripheralInit
+ * \brief Initialize peripherals used by the application.
+ * \retval None
+ */
 void PeripheralInit (void)
 {
     cy_stc_gpio_pin_config_t pinCfg;
 
     /* Do all the relevant clock configuration */
-    Cy_Fx2g3_InitPeripheralClocks(true, true);
-
-    /* Unlock and then disable the watchdog. */
-    Cy_WDT_Unlock();
-    Cy_WDT_Disable();
-
-    /* Enable all interrupts. */
-    __set_BASEPRI(0);
-    __enable_irq();
-
-    InitUart(LOGGING_SCB_IDX);
+    Cy_Fx2g3_InitPeripheralClocks(false, true);
 
     /* Configure the GPIOs used for firmware activity indication. */
     memset ((void *)&pinCfg, 0, sizeof(pinCfg));
@@ -167,20 +117,15 @@ void PeripheralInit (void)
 
 }
 
-/*****************************************************************************
-* Function Name: main(void)
-******************************************************************************
-* Summary:
-*  Entry to the application.
-*
-* Parameters:
-*  void
-
-* Return:
-*  Does not return.
-*****************************************************************************/
+/**
+ * \name main
+ * \brief Entry to the application.
+ * \retval Does not return.
+ */
 int main(void)
 {
+    const char start_string[] = "********** FX2G3:Hello World Application**********\r\n";
+    uint32_t loopCount = 0;
 
     /* Initialize the PDL driver library and set the clock variables. */
     /* Note: All FX devices,  share a common configuration structure. */
@@ -189,19 +134,34 @@ int main(void)
     /* Initialize the device and board peripherals */
     cybsp_init();
 
-    const char start_string[] = " HELLO WORLD \r\n";
-    uint32_t loopCount = 0;
-
     /* Perform PDL and UART initialization as the first step. */
     PeripheralInit();
 
+    /* Unlock and then disable the watchdog. */
+    Cy_WDT_Unlock();
+    Cy_WDT_Disable();
+
+    /*
+     * If logging is done through the USBFS port, ISR execution is required in this application.
+     * Set BASEPRI value to 0 to ensure all exceptions can run and then enable interrupts.
+     */
+#if (CY_CPU_CORTEX_M4)
+    __set_BASEPRI(0);
+#endif /* CY_CPU_CORTEX_M4 */
+
+    __enable_irq();
+
+#if !USBFS_LOGS_ENABLE
+    /* Initialize the UART for logging. */
+    InitUart(LOGGING_SCB_IDX);
+#endif /* USBFS_LOGS_ENABLE */
+
     /*
      * Initialize the logger module. We are using a blocking print option which will
-     * output the messages on UART immediately.
+     * output the messages immediately without buffering.
      */
     Cy_Debug_LogInit(&dbgCfg);
     Cy_SysLib_Delay(500);
-    Cy_Debug_AddToLog(1, "********** FX2G3:Hello World Application********** \r\n");
 
     /* Print start-up string using SCB0 - UART. */
     DBG_APP_INFO("%s", start_string);
