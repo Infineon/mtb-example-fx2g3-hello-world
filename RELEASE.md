@@ -6,7 +6,7 @@ Refer to the [README.md](./README.md).
 
 ## Defect Fixes
 
-* Revised the README to include information on supported products
+* Updated to use new DataWire APIs from USBFXStack
 
 ## Supported Software and Tools
 
@@ -29,4 +29,4 @@ For more information, refer to the following documents:
 * [Infineon Technologies AG](https://www.infineon.com)
 
 ---
-© 2025, Cypress Semiconductor Corporation (an Infineon company) or an affiliate of Cypress Semiconductor Corporation.
+© 2026, Cypress Semiconductor Corporation (an Infineon company) or an affiliate of Cypress Semiconductor Corporation.
